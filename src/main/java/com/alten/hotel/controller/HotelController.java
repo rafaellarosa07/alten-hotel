@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 import java.util.List;
 
 @RestController
@@ -28,7 +30,7 @@ public class HotelController {
 
 
   @PostMapping
-  public ResponseEntity<HotelViewDTO> create(@RequestBody NewHotelDTO resource) {
+  public ResponseEntity<HotelViewDTO> create(@RequestBody @Valid NewHotelDTO resource) {
     HotelViewDTO hotel = hotelService.create(resource);
     return new ResponseEntity<>(hotel, HttpStatus.CREATED);
   }

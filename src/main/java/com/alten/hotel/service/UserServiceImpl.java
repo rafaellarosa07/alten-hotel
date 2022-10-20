@@ -2,9 +2,11 @@ package com.alten.hotel.service;
 
 import com.alten.hotel.dto.NewUserDTO;
 import com.alten.hotel.dto.UserViewDTO;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public final class UserServiceImpl implements UserService {
 
   @Override
