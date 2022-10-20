@@ -11,7 +11,7 @@ public sealed interface UserService permits UserServiceImpl{
 
   UserViewDTO update(NewUserDTO newUserDTO);
 
-  UserViewDTO delete(Long id);
+  void delete(Long id);
 
   List<UserViewDTO> getAll();
 
