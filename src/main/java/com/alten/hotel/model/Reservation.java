@@ -22,13 +22,23 @@ public class Reservation {
   private Long number;
 
   @Column(name = "DATE_CHECK_IN", nullable = false)
-  private LocalDateTime dateCheckOut;
+  private LocalDateTime dateCheckIn;
 
   @Column(name = "DATE_CHECK_OUT", nullable = false)
-  private Boolean dateCheckIn;
+  private LocalDateTime dateCheckOut;
 
   @ManyToOne
   @JoinColumn(name = "USER_ID", nullable = false)
   private User user;
+
+  @OneToOne
+  @JoinColumn(name = "ROOM_ID", nullable = false)
+  private Room room;
+
+  @Column(name = "IS_CANCELED", nullable = false)
+  private Boolean isCanceled;
+
+  @Column(name = "LAST_MODIFICATION", nullable = false)
+  private LocalDateTime lastModification;
 
 }

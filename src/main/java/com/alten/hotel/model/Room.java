@@ -20,7 +20,5 @@ public class Room {
   @Column(name = "NUMBER", nullable = false)
   private Long number;
 
-  @Column(name = "AVAILABLE", nullable = false)
-  private Boolean available;
 
 }

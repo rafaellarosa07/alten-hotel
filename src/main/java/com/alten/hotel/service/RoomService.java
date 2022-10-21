@@ -9,4 +9,5 @@ sealed public interface RoomService permits RoomServiceImpl {
   List<RoomDTO> getAll();
 
   RoomDTO findById(long id);
+
 }

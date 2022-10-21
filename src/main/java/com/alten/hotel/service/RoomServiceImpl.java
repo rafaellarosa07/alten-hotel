@@ -24,6 +24,7 @@ public final class RoomServiceImpl implements RoomService {
 
   /**
    * find all hotels
+   *
    * @return List<HotelViewDTO>
    */
   @Override
@@ -35,6 +36,7 @@ public final class RoomServiceImpl implements RoomService {
 
   /**
    * find hotel by id
+   *
    * @param id
    * @return HotelViewDTO
    */
@@ -44,4 +46,6 @@ public final class RoomServiceImpl implements RoomService {
             () -> new RuntimeException("Hotel not found"));
     return mapper.map(room, RoomDTO.class);
   }
+
+
 }

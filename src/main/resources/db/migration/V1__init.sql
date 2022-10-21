@@ -22,8 +22,10 @@ CREATE TABLE RESERVATION (
                       DATE_CHECK_IN TIMESTAMP not null,
                       DATE_CHECK_OUT TIMESTAMP not null,
                       USER_ID INT not null,
+                      ROOM_ID INT not null,
                       primary key (`ID`),
-                      FOREIGN KEY (USER_ID) REFERENCES USER(ID)
+                      FOREIGN KEY (USER_ID) REFERENCES USER(ID),
+                      FOREIGN KEY (ROOM_ID) REFERENCES ROOM(ID)
 );
 
 
