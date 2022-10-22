@@ -30,7 +30,7 @@ public class UserController {
 
   @PostMapping
   public ResponseEntity<UserViewDTO> create(@RequestBody @Valid NewUserDTO resource) {
-    UserViewDTO user = userService.create(resource);
+    var user = userService.create(resource);
     return new ResponseEntity<>(user, HttpStatus.CREATED);
   }
 
@@ -40,8 +40,8 @@ public class UserController {
   }
 
   @GetMapping("{id}")
-  public ResponseEntity<UserViewDTO> getById(@PathVariable("id") long bagId) {
-    UserViewDTO userViewDTO = userService.findById(bagId);
+  public ResponseEntity<UserViewDTO> getById(@PathVariable("id") long Id) {
+    var userViewDTO = userService.findById(Id);
     return new ResponseEntity<>(userViewDTO, HttpStatus.OK);
   }
 

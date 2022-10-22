@@ -31,8 +31,7 @@ public final class UserServiceImpl implements UserService {
    */
   @Override
   public UserViewDTO create(NewUserDTO newUserDTO) {
-    var user = new User(newUserDTO.getId(), newUserDTO.getName(),
-            newUserDTO.getUsername(), newUserDTO.getPassword(), newUserDTO.getDocument());
+    var user = new User(newUserDTO.getId(), newUserDTO.getName());
     repository.save(user);
     return mapper.map(user, UserViewDTO.class);
   }

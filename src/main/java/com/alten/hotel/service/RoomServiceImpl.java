@@ -1,6 +1,7 @@
 package com.alten.hotel.service;
 
 import com.alten.hotel.dto.RoomDTO;
+import com.alten.hotel.enumaration.RoomStatus;
 import com.alten.hotel.repository.RoomRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,14 @@ public final class RoomServiceImpl implements RoomService {
             .collect(Collectors.toList());
   }
 
+
+  @Override
+  public List<RoomDTO> getAllAvailableRooms(RoomStatus status) {
+    var rooms = repository.findByStatus(status);
+    return rooms.stream().map(room -> mapper.map(room, RoomDTO.class))
+            .collect(Collectors.toList());
+  }
+
   /**
    * find hotel by id
    *
@@ -45,6 +54,12 @@ public final class RoomServiceImpl implements RoomService {
     var room = repository.findById(id).orElseThrow(
             () -> new RuntimeException("Hotel not found"));
     return mapper.map(room, RoomDTO.class);
+  }
+
+
+  @Override
+  public RoomStatus checkAvailability(long id) {
+    return findById(id).getStatus();
   }
 
 

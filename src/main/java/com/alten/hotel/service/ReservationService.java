@@ -13,4 +13,6 @@ sealed public interface ReservationService permits ReservationServiceImpl {
   ReservationDTO reserveARoom(ReservationDTO reservationDTO);
 
   ReservationDTO modifyAReservation(ReservationDTO reservationDTO);
+
+  void cancelAReservation(Long numberReservation);
 }

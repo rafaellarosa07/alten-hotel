@@ -1,6 +1,8 @@
 package com.alten.hotel.service;
 
+import com.alten.hotel.enumaration.ReservationStatus;
 import com.alten.hotel.dto.ReservationDTO;
+import com.alten.hotel.enumaration.RoomStatus;
 import com.alten.hotel.model.Reservation;
 import com.alten.hotel.model.Room;
 import com.alten.hotel.repository.ReservationRepository;
@@ -32,6 +34,7 @@ public final class ReservationServiceImpl implements ReservationService {
 
   /**
    * Reserve a room
+   *
    * @param reservationDTO
    * @return ReservationDTO
    */
@@ -46,10 +49,12 @@ public final class ReservationServiceImpl implements ReservationService {
 
   /**
    * Check if reservation is ok
+   *
    * @param reservationDTO
    * @return void
    */
-  private void validateReservation(ReservationDTO reservationDTO){
+  private void validateReservation(ReservationDTO reservationDTO) {
+    checkRoomAvailable(reservationDTO.getRoom().getId());
     checkAvailability(reservationDTO);
     checkStay(reservationDTO.getDateCheckIn());
     checkNumberOfDays(reservationDTO.getDateCheckIn(), reservationDTO.getDateCheckOut());
@@ -59,12 +64,25 @@ public final class ReservationServiceImpl implements ReservationService {
 
   /**
    * Check if room is available
+   *
+   * @param idRoom
+   * @return void
+   */
+  private void checkRoomAvailable(Long idRoom) {
+    if (roomService.checkAvailability(idRoom).equals(RoomStatus.INTERDICTED)) {
+      throw new RuntimeException("ROOM INTERDICTED");
+    }
+  }
+
+  /**
+   * Check reservation
+   *
    * @param reservationDTO
    * @return void
    */
-  private void checkAvailability(ReservationDTO reservationDTO){
+  private void checkAvailability(ReservationDTO reservationDTO) {
     getDates(reservationDTO).stream().forEach(date -> {
-      if(repository.findReservationByDateBetweenPeriod(date).isPresent()){
+      if (repository.findReservationByDateBetweenPeriod(date).isPresent()) {
         throw new RuntimeException("Room not available on these dates");
       }
     });
@@ -79,35 +97,38 @@ public final class ReservationServiceImpl implements ReservationService {
 
   /**
    * Check if stay is at least 1 day in advance
+   *
    * @param checkIn
    * @return void
    */
-  private void checkStay(LocalDateTime checkIn){
+  private void checkStay(LocalDateTime checkIn) {
     var today = LocalDate.now();
-    if(!checkIn.toLocalDate().isAfter(today)){
+    if (!checkIn.toLocalDate().isAfter(today)) {
       throw new RuntimeException("The reservation can only be booked at least 1 day in advance.");
     }
   }
 
   /**
    * Check if stay is longer than 3 days
+   *
    * @param checkIn
    * @param checkOut
    * @return void
    */
-  private void checkNumberOfDays(LocalDateTime checkIn, LocalDateTime checkOut){
-    if(!checkIn.plusDays(3).isAfter(checkOut)){
-        throw new RuntimeException("The stay can’t be longer than 3 days");
+  private void checkNumberOfDays(LocalDateTime checkIn, LocalDateTime checkOut) {
+    if (!checkIn.plusDays(3).isAfter(checkOut)) {
+      throw new RuntimeException("The stay can’t be longer than 3 days");
     }
   }
 
   /**
    * Check if stay is beeing reserved more than 30 days in advance
+   *
    * @param checkIn
    * @return void
    */
-  private void checkNumberOfDaysAdvance(LocalDateTime checkIn){
-    if(!LocalDate.now().plusDays(31).isAfter(checkIn.toLocalDate())){
+  private void checkNumberOfDaysAdvance(LocalDateTime checkIn) {
+    if (!LocalDate.now().plusDays(31).isAfter(checkIn.toLocalDate())) {
       throw new RuntimeException("The stay can’t be reserved more than 30 days in advance.");
     }
   }
@@ -115,6 +136,7 @@ public final class ReservationServiceImpl implements ReservationService {
 
   /**
    * Modify a reservation
+   *
    * @param reservationDTO
    * @return ReservationDTO
    */
@@ -132,14 +154,21 @@ public final class ReservationServiceImpl implements ReservationService {
     return mapper.map(repository.save(reservation), ReservationDTO.class);
   }
 
-
-  public void cancelAReservation(Long idReservation){
-
+  /**
+   * Cancel a reservation
+   *
+   * @param numberReservation
+   * @return void
+   */
+  @Override
+  public void cancelAReservation(Long numberReservation) {
+    repository.updateReservationByStatus(numberReservation, ReservationStatus.CANCELED);
   }
 
 
   /**
    * find all Reservations
+   *
    * @return List<ReservationDTO>
    */
   @Override
@@ -151,6 +180,7 @@ public final class ReservationServiceImpl implements ReservationService {
 
   /**
    * find hotel by id
+   *
    * @param id
    * @return ReservationDTO
    */

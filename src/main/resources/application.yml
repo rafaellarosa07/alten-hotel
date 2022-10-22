@@ -1,9 +1,16 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /alten-hotel
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   datasource:
     url: jdbc:mysql://localhost:3306/altenHotel
     username: root
     password: root@1234
-    driverClassName: com.mysql.jdbc.Driver
+    driverClassName: com.mysql.cj.jdbc.Driver
   jpa:
     spring.jpa.database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     spring.jpa.hibernate.ddl-auto: validate
