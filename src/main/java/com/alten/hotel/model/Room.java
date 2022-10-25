@@ -21,6 +21,7 @@ public class Room {
   @Column(name = "NUMBER", nullable = false)
   private Long number;
 
+  @Enumerated(EnumType.STRING)
   @Column(name = "STATUS", nullable = false)
   private RoomStatus status;
 

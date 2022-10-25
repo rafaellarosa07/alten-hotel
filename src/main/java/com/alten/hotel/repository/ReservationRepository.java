@@ -13,6 +13,8 @@ import java.util.Optional;
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
+  Optional<Reservation> findByNumber(Long numberReservation);
+
   @Query("SELECT r FROM Reservation r WHERE :date between r.dateCheckIn and r.dateCheckOut")
   Optional<Reservation> findReservationByDateBetweenPeriod(LocalDate date);
 

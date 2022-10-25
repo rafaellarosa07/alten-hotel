@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/reservation")
@@ -17,32 +16,38 @@ public class ReservationController {
   private ReservationService reservationService;
 
   @Autowired
-  public ReservationController(ReservationService reservationService){
+  public ReservationController(ReservationService reservationService) {
     this.reservationService = reservationService;
   }
 
 
   @PostMapping
-  public ResponseEntity<ReservationDTO> reserveARoom(@RequestBody @Valid ReservationDTO reservationDTO) {
+  public ResponseEntity<?> reserveARoom(@RequestBody @Valid ReservationDTO reservationDTO) {
     var reservation = reservationService.reserveARoom(reservationDTO);
     return new ResponseEntity<>(reservation, HttpStatus.CREATED);
   }
 
   @GetMapping
-  public List<ReservationDTO> getAll() {
-    return reservationService.getAll();
+  public ResponseEntity<?> getAll() {
+    return new ResponseEntity<>(reservationService.getAll(), HttpStatus.OK);
   }
 
   @GetMapping("{id}")
-  public ResponseEntity<ReservationDTO> getById(@PathVariable("id") long Id) {
+  public ResponseEntity<?> getById(@PathVariable("id") long Id) {
     var reservationViewDTO = reservationService.findById(Id);
     return new ResponseEntity<>(reservationViewDTO, HttpStatus.OK);
   }
 
   @PutMapping
-  public ResponseEntity<ReservationDTO> modifyAReservation(@RequestBody @Valid ReservationDTO reservationDTO) {
+  public ResponseEntity<?> modifyAReservation(@RequestBody @Valid ReservationDTO reservationDTO) {
     var reservation = reservationService.modifyAReservation(reservationDTO);
     return new ResponseEntity<>(reservation, HttpStatus.ACCEPTED);
+  }
+
+  @GetMapping("/cancel/{number}")
+  public ResponseEntity<?> cancelAReservation(@PathVariable("number") long number) {
+    reservationService.cancelAReservation(number);
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 
 }

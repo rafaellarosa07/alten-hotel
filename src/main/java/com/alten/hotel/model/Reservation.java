@@ -36,6 +36,7 @@ public class Reservation {
   @JoinColumn(name = "ROOM_ID", nullable = false)
   private Room room;
 
+  @Enumerated(EnumType.STRING)
   @Column(name = "STATUS", nullable = false)
   private ReservationStatus status;
 

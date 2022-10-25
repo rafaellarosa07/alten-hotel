@@ -5,7 +5,7 @@ import com.alten.hotel.dto.UserViewDTO;
 
 import java.util.List;
 
-public sealed interface UserService permits UserServiceImpl{
+public interface UserService {
 
   UserViewDTO create(NewUserDTO newUserDTO);
 

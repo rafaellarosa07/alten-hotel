@@ -5,7 +5,7 @@ import com.alten.hotel.enumaration.RoomStatus;
 
 import java.util.List;
 
-sealed public interface RoomService permits RoomServiceImpl {
+public interface RoomService {
 
   List<RoomDTO> getAll();
 
