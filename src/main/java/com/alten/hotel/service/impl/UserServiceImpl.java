@@ -1,4 +1,4 @@
-package com.alten.hotel.service;
+package com.alten.hotel.service.impl;
 
 import com.alten.hotel.dto.NewUserDTO;
 import com.alten.hotel.dto.UserViewDTO;
@@ -6,6 +6,7 @@ import com.alten.hotel.exception.ApiException;
 import com.alten.hotel.exception.messages.Messages;
 import com.alten.hotel.model.User;
 import com.alten.hotel.repository.UserRepository;
+import com.alten.hotel.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

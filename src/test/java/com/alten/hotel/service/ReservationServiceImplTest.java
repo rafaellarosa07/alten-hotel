@@ -10,6 +10,7 @@ import com.alten.hotel.model.Reservation;
 import com.alten.hotel.model.Room;
 import com.alten.hotel.model.User;
 import com.alten.hotel.repository.ReservationRepository;
+import com.alten.hotel.service.impl.ReservationServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

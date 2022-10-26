@@ -5,6 +5,7 @@ import com.alten.hotel.dto.UserViewDTO;
 import com.alten.hotel.exception.ApiException;
 import com.alten.hotel.model.User;
 import com.alten.hotel.repository.UserRepository;
+import com.alten.hotel.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
