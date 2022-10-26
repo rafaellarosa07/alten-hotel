@@ -4,17 +4,18 @@
 ALTEN HOTEL API
 
 I'M USING THE DATABASE MYSQL AND THE FLYWAY TO MAKE THE MIGRATIONS.  
-I'M COVERING THE ALMOST ALL SYSTEM WITH UNIT TESTS  
-I'M USING JAVA 17 WITH SPRING BOOT AND SPRING DOC TO API DOCUMENTATION.. 
+I'M COVERING THE ALMOST ALL SYSTEM WITH UNIT TESTS   
+I'M USING JAVA 17 WITH SPRING BOOT AND SPRING DOC TO API DOCUMENTATION..   
+I FOLLOWED A GIT FLOW RULES TO ORGANIZE MY PROJECT. 
 
-
+  
 ......................................................................
+   
 
+        
 
-
-
-
-
+     
+      
 CHALLENGE
 Post-Covid scenario:
 People are now free to travel everywhere but because of the pandemic, a lot of hotels
