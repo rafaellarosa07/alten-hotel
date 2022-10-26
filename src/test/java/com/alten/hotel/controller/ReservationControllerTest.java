@@ -3,8 +3,11 @@ package com.alten.hotel.controller;
 import com.alten.hotel.config.ApplicationConfig;
 import com.alten.hotel.dto.ReservationDTO;
 import com.alten.hotel.dto.RoomDTO;
+import com.alten.hotel.dto.UserViewDTO;
+import com.alten.hotel.enumaration.ReservationStatus;
 import com.alten.hotel.enumaration.RoomStatus;
 import com.alten.hotel.exception.ApiException;
+import com.alten.hotel.exception.messages.Messages;
 import com.alten.hotel.service.ReservationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.core.Is;
@@ -15,6 +18,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -24,8 +28,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -94,6 +97,7 @@ class ReservationControllerTest {
   @Test
   void cancelAReservation() throws Exception {
     Long numberReservation = 123123L;
+    doNothing().when(reservationService).cancelAReservation(numberReservation);
     mockMvc.perform(get(PATH + "/cancel/{number}", numberReservation))
             .andExpect(status().isOk());
   }
@@ -101,11 +105,11 @@ class ReservationControllerTest {
   @Test
   void cancelAReservationErrorNotFound() throws Exception {
     Long numberReservation = 123124L;
-    doThrow(ApiException.class).when(reservationService).cancelAReservation(numberReservation);
+    doThrow(new ApiException(HttpStatus.NOT_FOUND, Messages.ERROR_USER_NOT_FOUND)).when(reservationService).cancelAReservation(numberReservation);
 
     mockMvc.perform(get(PATH + "/cancel/{number}", numberReservation)
                     .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isBadRequest());
+            .andExpect(status().isNotFound());
   }
 
 
@@ -114,7 +118,7 @@ class ReservationControllerTest {
             LocalDateTime.of(LocalDate.of(2022, 10, 30),
                     LocalTime.of(12, 12)),
             LocalDateTime.of(LocalDate.of(2022, 10, 31),
-                    LocalTime.of(12, 12)), 1L,
-            new RoomDTO(3L, 30L, RoomStatus.READY_TO_RESERVE));
+                    LocalTime.of(12, 12)), new UserViewDTO(1L, "TESTE"),
+            new RoomDTO(3L, 30L, RoomStatus.READY_TO_RESERVE), ReservationStatus.RESERVED);
   }
 }

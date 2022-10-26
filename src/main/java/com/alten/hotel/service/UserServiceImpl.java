@@ -51,6 +51,8 @@ public class UserServiceImpl implements UserService {
     var user = repository.findById(userDTO.getId())
             .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
                     Messages.ERROR_USER_NOT_FOUND));
+    user.setName(userDTO.getName());
+    repository.save(user);
     return mapper.map(user, UserViewDTO.class);
   }
 

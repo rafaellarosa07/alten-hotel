@@ -29,8 +29,8 @@ public class RoomController {
     return roomService.getAll();
   }
 
-  @GetMapping(value = "/by-status")
-  public List<RoomDTO> getAll(@PathVariable("status") RoomStatus status) {
+  @GetMapping(value = "/by-status/{status}")
+  public List<RoomDTO> getAllByStatus(@PathVariable("status") RoomStatus status) {
     return roomService.getAllAvailableRooms(status);
   }
 

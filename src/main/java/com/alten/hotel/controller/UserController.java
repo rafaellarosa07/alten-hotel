@@ -1,15 +1,14 @@
 package com.alten.hotel.controller;
 
+import com.alten.hotel.dto.NewUserDTO;
 import com.alten.hotel.dto.UserViewDTO;
 import com.alten.hotel.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -23,6 +22,24 @@ public class UserController {
     this.userService = userService;
   }
 
+
+  @PostMapping
+  public ResponseEntity<?> create(@RequestBody @Valid NewUserDTO newUserDTO) {
+    var reservation = userService.create(newUserDTO);
+    return new ResponseEntity<>(reservation, HttpStatus.CREATED);
+  }
+
+  @PutMapping
+  public ResponseEntity<?> update(@RequestBody @Valid NewUserDTO newUserDTO) {
+    var reservation = userService.update(newUserDTO);
+    return new ResponseEntity<>(reservation, HttpStatus.CREATED);
+  }
+
+  @DeleteMapping("{id}")
+  public ResponseEntity<UserViewDTO> delete(@PathVariable("id") long Id) {
+    userService.delete(Id);
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
   @GetMapping
   public List<UserViewDTO> getAll() {
     return userService.getAll();

@@ -1,5 +1,6 @@
 package com.alten.hotel.dto;
 
+import com.alten.hotel.enumaration.ReservationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,8 +17,10 @@ public class ReservationDTO implements Serializable {
   private Long number;
   private LocalDateTime dateCheckIn;
   private LocalDateTime dateCheckOut;
-  private Long userId;
+  private UserViewDTO userId;
   private RoomDTO room;
+  private ReservationStatus status;
+
 
 
   @Override
