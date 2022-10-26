@@ -46,6 +46,7 @@ public class ReservationServiceImpl implements ReservationService {
     validateReservation(reservationDTO);
     var reservation = mapper.map(reservationDTO, Reservation.class);
     reservation.setNumber(Long.valueOf(reservationDTO.hashCode()));
+    reservation.setStatus(ReservationStatus.RESERVED);
     return mapper.map(repository.save(reservation), ReservationDTO.class);
   }
 
