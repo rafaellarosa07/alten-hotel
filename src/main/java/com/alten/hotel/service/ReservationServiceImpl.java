@@ -1,11 +1,16 @@
 package com.alten.hotel.service;
 
 import com.alten.hotel.dto.ReservationDTO;
+import com.alten.hotel.enumaration.ReservationStatus;
+import com.alten.hotel.enumaration.RoomStatus;
+import com.alten.hotel.exception.ApiException;
+import com.alten.hotel.exception.messages.Messages;
 import com.alten.hotel.model.Reservation;
 import com.alten.hotel.model.Room;
 import com.alten.hotel.repository.ReservationRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -14,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public final class ReservationServiceImpl implements ReservationService {
+public class ReservationServiceImpl implements ReservationService {
 
 
   private ReservationRepository repository;
@@ -32,6 +37,7 @@ public final class ReservationServiceImpl implements ReservationService {
 
   /**
    * Reserve a room
+   *
    * @param reservationDTO
    * @return ReservationDTO
    */
@@ -40,16 +46,19 @@ public final class ReservationServiceImpl implements ReservationService {
     validateReservation(reservationDTO);
     var reservation = mapper.map(reservationDTO, Reservation.class);
     reservation.setNumber(Long.valueOf(reservationDTO.hashCode()));
+    reservation.setStatus(ReservationStatus.RESERVED);
     return mapper.map(repository.save(reservation), ReservationDTO.class);
   }
 
 
   /**
    * Check if reservation is ok
+   *
    * @param reservationDTO
    * @return void
    */
-  private void validateReservation(ReservationDTO reservationDTO){
+  private void validateReservation(ReservationDTO reservationDTO) {
+    checkRoomAvailable(reservationDTO.getRoom().getId());
     checkAvailability(reservationDTO);
     checkStay(reservationDTO.getDateCheckIn());
     checkNumberOfDays(reservationDTO.getDateCheckIn(), reservationDTO.getDateCheckOut());
@@ -59,13 +68,28 @@ public final class ReservationServiceImpl implements ReservationService {
 
   /**
    * Check if room is available
+   *
+   * @param idRoom
+   * @return void
+   */
+  private void checkRoomAvailable(Long idRoom) {
+    if (roomService.checkAvailability(idRoom).equals(RoomStatus.INTERDICTED)) {
+      throw new ApiException(HttpStatus.EXPECTATION_FAILED,
+              Messages.ERROR_ROOM_INTERDICTED);
+    }
+  }
+
+  /**
+   * Check reservation
+   *
    * @param reservationDTO
    * @return void
    */
-  private void checkAvailability(ReservationDTO reservationDTO){
+  private void checkAvailability(ReservationDTO reservationDTO) {
     getDates(reservationDTO).stream().forEach(date -> {
-      if(repository.findReservationByDateBetweenPeriod(date).isPresent()){
-        throw new RuntimeException("Room not available on these dates");
+      if (repository.findReservationByDateBetweenPeriod(date).isPresent()) {
+        throw new ApiException(HttpStatus.EXPECTATION_FAILED,
+                Messages.ERROR_ROOM_NOT_AVAILABLE);
       }
     });
   }
@@ -79,42 +103,49 @@ public final class ReservationServiceImpl implements ReservationService {
 
   /**
    * Check if stay is at least 1 day in advance
+   *
    * @param checkIn
    * @return void
    */
-  private void checkStay(LocalDateTime checkIn){
+  private void checkStay(LocalDateTime checkIn) {
     var today = LocalDate.now();
-    if(!checkIn.toLocalDate().isAfter(today)){
-      throw new RuntimeException("The reservation can only be booked at least 1 day in advance.");
+    if (!checkIn.toLocalDate().isAfter(today)) {
+      throw new ApiException(HttpStatus.EXPECTATION_FAILED,
+              Messages.ERROR_RESERVATION_1_DAY_ADVANCE);
     }
   }
 
   /**
    * Check if stay is longer than 3 days
+   *
    * @param checkIn
    * @param checkOut
    * @return void
    */
-  private void checkNumberOfDays(LocalDateTime checkIn, LocalDateTime checkOut){
-    if(!checkIn.plusDays(3).isAfter(checkOut)){
-        throw new RuntimeException("The stay can’t be longer than 3 days");
+  private void checkNumberOfDays(LocalDateTime checkIn, LocalDateTime checkOut) {
+    if (!checkIn.plusDays(3).isAfter(checkOut)) {
+      throw new ApiException(HttpStatus.EXPECTATION_FAILED,
+              Messages.ERROR_RESERVATION_CANT_BE_LONGER_3_DAYS);
     }
   }
 
   /**
    * Check if stay is beeing reserved more than 30 days in advance
+   *
    * @param checkIn
    * @return void
    */
-  private void checkNumberOfDaysAdvance(LocalDateTime checkIn){
-    if(!LocalDate.now().plusDays(31).isAfter(checkIn.toLocalDate())){
-      throw new RuntimeException("The stay can’t be reserved more than 30 days in advance.");
+  private void checkNumberOfDaysAdvance(LocalDateTime checkIn) {
+    if (!LocalDate.now().plusDays(31).isAfter(checkIn.toLocalDate())) {
+      throw new ApiException(HttpStatus.EXPECTATION_FAILED,
+              Messages.ERROR_RESERVATION_MORE_30_DAYS_ADVANCE);
     }
   }
 
 
   /**
    * Modify a reservation
+   *
    * @param reservationDTO
    * @return ReservationDTO
    */
@@ -122,7 +153,9 @@ public final class ReservationServiceImpl implements ReservationService {
   public ReservationDTO modifyAReservation(ReservationDTO reservationDTO) {
     validateReservation(reservationDTO);
     var reservation = repository.findById(reservationDTO.getId())
-            .orElseThrow(() -> new RuntimeException("Reservation not found"));
+            .orElseThrow(() ->
+                    new ApiException(HttpStatus.NOT_FOUND,
+                            Messages.ERROR_RESERVATION_NOT_FOUND));
 
     reservation.setRoom(mapper.map(reservationDTO.getRoom(), Room.class));
     reservation.setDateCheckIn(reservationDTO.getDateCheckIn());
@@ -132,14 +165,25 @@ public final class ReservationServiceImpl implements ReservationService {
     return mapper.map(repository.save(reservation), ReservationDTO.class);
   }
 
-
-  public void cancelAReservation(Long idReservation){
-
+  /**
+   * Cancel a reservation
+   *
+   * @param numberReservation
+   * @return void
+   */
+  @Override
+  public void cancelAReservation(Long numberReservation) {
+    var reservation = repository.findByNumber(numberReservation).orElseThrow(() ->
+            new ApiException(HttpStatus.NOT_FOUND,
+                    Messages.ERROR_RESERVATION_NOT_FOUND));
+    reservation.setStatus(ReservationStatus.CANCELED);
+    repository.save(reservation);
   }
 
 
   /**
    * find all Reservations
+   *
    * @return List<ReservationDTO>
    */
   @Override
@@ -151,13 +195,15 @@ public final class ReservationServiceImpl implements ReservationService {
 
   /**
    * find hotel by id
+   *
    * @param id
    * @return ReservationDTO
    */
   @Override
   public ReservationDTO findById(long id) {
     var reservation = repository.findById(id).orElseThrow(
-            () -> new RuntimeException("Hotel not found"));
+            () -> new ApiException(HttpStatus.NOT_FOUND,
+                    Messages.ERROR_RESERVATION_NOT_FOUND));
     return mapper.map(reservation, ReservationDTO.class);
   }
 }

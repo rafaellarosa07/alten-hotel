@@ -4,7 +4,7 @@ import com.alten.hotel.dto.ReservationDTO;
 
 import java.util.List;
 
-sealed public interface ReservationService permits ReservationServiceImpl {
+public interface ReservationService {
 
   List<ReservationDTO> getAll();
 
@@ -13,4 +13,6 @@ sealed public interface ReservationService permits ReservationServiceImpl {
   ReservationDTO reserveARoom(ReservationDTO reservationDTO);
 
   ReservationDTO modifyAReservation(ReservationDTO reservationDTO);
+
+  void cancelAReservation(Long numberReservation);
 }

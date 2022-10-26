@@ -1,5 +1,6 @@
 package com.alten.hotel.model;
 
+import com.alten.hotel.enumaration.ReservationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +9,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "RESERVATION")
+@Table(name = "Reservation")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,10 +36,8 @@ public class Reservation {
   @JoinColumn(name = "ROOM_ID", nullable = false)
   private Room room;
 
-  @Column(name = "IS_CANCELED", nullable = false)
-  private Boolean isCanceled;
-
-  @Column(name = "LAST_MODIFICATION", nullable = false)
-  private LocalDateTime lastModification;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "STATUS", nullable = false)
+  private ReservationStatus status;
 
 }

@@ -13,9 +13,4 @@ public class UserViewDTO {
 
   private String name;
 
-  private String username;
-
-  private String password;
-
-  private String document;
 }
