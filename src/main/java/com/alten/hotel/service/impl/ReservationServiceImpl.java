@@ -1,4 +1,4 @@
-package com.alten.hotel.service;
+package com.alten.hotel.service.impl;
 
 import com.alten.hotel.dto.ReservationDTO;
 import com.alten.hotel.enumaration.ReservationStatus;
@@ -8,6 +8,8 @@ import com.alten.hotel.exception.messages.Messages;
 import com.alten.hotel.model.Reservation;
 import com.alten.hotel.model.Room;
 import com.alten.hotel.repository.ReservationRepository;
+import com.alten.hotel.service.ReservationService;
+import com.alten.hotel.service.RoomService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

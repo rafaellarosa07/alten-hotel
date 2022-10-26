@@ -5,6 +5,7 @@ import com.alten.hotel.enumaration.RoomStatus;
 import com.alten.hotel.exception.ApiException;
 import com.alten.hotel.model.Room;
 import com.alten.hotel.repository.RoomRepository;
+import com.alten.hotel.service.impl.RoomServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

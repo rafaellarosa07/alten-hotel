@@ -1,10 +1,11 @@
-package com.alten.hotel.service;
+package com.alten.hotel.service.impl;
 
 import com.alten.hotel.dto.RoomDTO;
 import com.alten.hotel.enumaration.RoomStatus;
 import com.alten.hotel.exception.ApiException;
 import com.alten.hotel.exception.messages.Messages;
 import com.alten.hotel.repository.RoomRepository;
+import com.alten.hotel.service.RoomService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
